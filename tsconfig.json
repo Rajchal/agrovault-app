@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@screens/*": [
+        "screens/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@types/*": [
+        "types/*"
+      ]
+    },
+    "jsx": "react-native",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": [
+      "react-native",
+      "jest"
+    ]
+  },
+  "include": [
+    "src",
+    "App.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}
