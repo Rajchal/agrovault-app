@@ -1,34 +1,39 @@
 {
-    "expo": {
-        "name": "AgroVault",
-        "slug": "agrovault-mobile",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "assetBundlePatterns": [
-            "**/*"
-        ],
-        "ios": {
-            "supportsTabletMode": true,
-            "bundleIdentifier": "com.agrovault.mobile",
-            "buildNumber": "1"
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            },
-            "package": "com.agrovault.mobile",
-            "versionCode": 1
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
-        "scheme": "agrovault"
+  "expo": {
+    "name": "AgroVault",
+    "slug": "agrovault-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.agrovault.mobile",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.agrovault.mobile",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "agrovault",
+    "extra": {
+      "eas": {
+        "projectId": "648f34ed-91e3-48c6-85e0-4b660e1da0ff"
+      }
     }
+  }
 }
