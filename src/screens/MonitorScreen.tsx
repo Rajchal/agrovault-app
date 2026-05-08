@@ -5,6 +5,8 @@ import {
     Text,
     StyleSheet,
     Dimensions,
+    ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppContext } from '@context/AppContext';
@@ -48,6 +50,9 @@ export const MonitorScreen: React.FC = () => {
         setBattery,
         compressorOn,
         setCompressorOn,
+        loading,
+        error,
+        refreshData,
     } = useAppContext();
 
     const t = translations[language];
@@ -76,6 +81,27 @@ export const MonitorScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
+            {/* Loading Overlay */}
+            {loading && (
+                <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color={Colors.primary} />
+                    <Text style={styles.loadingText}>Connecting to ESP32...</Text>
+                </View>
+            )}
+
+            {/* Error Banner */}
+            {error && !loading && (
+                <View style={styles.errorBanner}>
+                    <Text style={styles.errorText}>⚠️ {error}</Text>
+                    <TouchableOpacity
+                        style={styles.retryButton}
+                        onPress={refreshData}
+                    >
+                        <Text style={styles.retryButtonText}>Retry</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
@@ -278,6 +304,51 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bg,
+    },
+    loadingOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10,
+    },
+    loadingText: {
+        marginTop: Spacing.md,
+        fontSize: 14,
+        color: Colors.primary,
+        fontWeight: '600',
+    },
+    errorBanner: {
+        backgroundColor: '#fee2e2',
+        borderBottomColor: '#fecaca',
+        borderBottomWidth: 1,
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    errorText: {
+        flex: 1,
+        color: '#991b1b',
+        fontSize: 13,
+        fontWeight: '500',
+    },
+    retryButton: {
+        backgroundColor: '#dc2626',
+        paddingHorizontal: Spacing.md,
+        paddingVertical: Spacing.xs,
+        borderRadius: 4,
+        marginLeft: Spacing.md,
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: '600',
     },
     scrollContent: {
         padding: Spacing.lg,

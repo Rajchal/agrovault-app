@@ -9,11 +9,17 @@
     ],
     "ios": {
       "bundleIdentifier": "com.agrovault.mobile",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "package": "com.agrovault.mobile",
-      "versionCode": 1
+      "versionCode": 1,
+      "usesCleartextTraffic": true
     },
     "scheme": "agrovault",
     "extra": {

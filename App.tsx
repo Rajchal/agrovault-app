@@ -10,6 +10,7 @@ import { WeatherScreen } from './src/screens/WeatherScreen';
 import { InfoScreen } from './src/screens/InfoScreen';
 import { Colors, Spacing } from './src/styles/theme';
 import { translations } from './src/utils/i18n';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 
 const Tab = createBottomTabNavigator();
 
@@ -153,7 +154,9 @@ export default function App() {
     return (
         <SafeAreaProvider>
             <AppProvider>
-                <AppNavigator />
+                <ErrorBoundary>
+                    <AppNavigator />
+                </ErrorBoundary>
             </AppProvider>
         </SafeAreaProvider>
     );
