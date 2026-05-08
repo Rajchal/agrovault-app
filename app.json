@@ -4,6 +4,12 @@
     "slug": "agrovault-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./src/assets/public/favicon/android-chrome-512x512.png",
+    "splash": {
+      "image": "./src/assets/public/favicon/android-chrome-512x512.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -18,7 +24,14 @@
     },
     "android": {
       "package": "com.agrovault.mobile",
-      "versionCode": 1
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/public/favicon/android-chrome-512x512.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/public/favicon/favicon.ico"
     },
     "scheme": "agrovault",
     "plugins": [
