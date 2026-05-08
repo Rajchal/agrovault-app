@@ -2,6 +2,13 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import { Language } from './i18n';
 import { fetchSensorDataWithRetry, SensorData } from '../services/api';
 
+const HISTORY_LIMIT = 12;
+
+const pushHistory = (history: number[], value: number) => {
+    const next = [...history, value];
+    return next.slice(-HISTORY_LIMIT);
+};
+
 interface AppContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
@@ -26,8 +33,10 @@ interface AppContextType {
     compressorOn: boolean;
     setCompressorOn: (on: boolean) => void;
     loading: boolean;
+    refreshing: boolean;
     error: string | null;
     lastUpdateTime: number;
+    humidityHistory: number[];
     refreshData: () => Promise<void>;
 }
 
@@ -46,12 +55,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [ambient, setAmbient] = useState(33);
     const [compressorOn, setCompressorOn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdateTime, setLastUpdateTime] = useState(0);
+    const [humidityHistory, setHumidityHistory] = useState<number[]>([88, 88, 88, 88, 88]);
 
-    const refreshData = async () => {
+    const refreshData = async (options?: { silent?: boolean }) => {
+        const silent = options?.silent ?? false;
+
         try {
-            setLoading(true);
+            if (silent) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
             setError(null);
             const data = await fetchSensorDataWithRetry();
 
@@ -64,6 +81,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             if (data.doorOpen !== undefined) setDoorOpen(data.doorOpen);
             if (data.gridOn !== undefined) setGridOn(data.gridOn);
             if (data.vegetables !== undefined) setSelectedCrops(data.vegetables);
+            if (data.humidity !== undefined) {
+                setHumidityHistory(current => pushHistory(current, data.humidity as number));
+            }
 
             setLastUpdateTime(Date.now());
         } catch (err) {
@@ -71,7 +91,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             setError(errorMsg);
             console.error('AppContext refresh error:', err);
         } finally {
-            setLoading(false);
+            if (silent) {
+                setRefreshing(false);
+            } else {
+                setLoading(false);
+            }
         }
     };
 
@@ -82,7 +106,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     // Auto-refresh every 5 seconds
     useEffect(() => {
-        const interval = setInterval(refreshData, 5000);
+        const interval = setInterval(() => refreshData({ silent: true }), 5000);
         return () => clearInterval(interval);
     }, []);
 
@@ -112,8 +136,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 compressorOn,
                 setCompressorOn,
                 loading,
+                refreshing,
                 error,
                 lastUpdateTime,
+                humidityHistory,
                 refreshData,
             }}
         >

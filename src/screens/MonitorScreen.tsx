@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LineChart } from 'react-native-chart-kit';
 import { useAppContext } from '@context/AppContext';
 import { KPICard } from '@components/KPICard';
 import { Card, CardHeader, CardBody, CardSection, Badge } from '@components/Card';
@@ -51,7 +52,9 @@ export const MonitorScreen: React.FC = () => {
         compressorOn,
         setCompressorOn,
         loading,
+        refreshing,
         error,
+        humidityHistory,
         refreshData,
     } = useAppContext();
 
@@ -72,6 +75,17 @@ export const MonitorScreen: React.FC = () => {
             message: 'All sensors operational. Battery good.',
         },
     ];
+
+    const humidityChartData = {
+        labels: humidityHistory.map((_, index) => `${index + 1}`),
+        datasets: [
+            {
+                data: humidityHistory.length > 0 ? humidityHistory : [humidity],
+                color: () => Colors.accent,
+                strokeWidth: 3,
+            },
+        ],
+    };
 
     const shelf = [
         { name: 'Tomato', emoji: '🍅', days: 21 },
@@ -159,12 +173,35 @@ export const MonitorScreen: React.FC = () => {
                 <Card>
                     <CardHeader title={t.chartTitle} />
                     <CardBody>
-                        <View style={styles.chartPlaceholder}>
-                            <Text style={styles.chartText}>
-                                📈 Temperature & Humidity Graph
-                            </Text>
-                            <Text style={styles.chartSubText}>
-                                (Chart rendering via react-native-chart-kit)
+                        <LineChart
+                            data={humidityChartData}
+                            width={Dimensions.get('window').width - 64}
+                            height={220}
+                            yAxisSuffix="%"
+                            fromZero
+                            withDots
+                            withInnerLines={false}
+                            withOuterLines={false}
+                            chartConfig={{
+                                backgroundColor: Colors.card,
+                                backgroundGradientFrom: Colors.card,
+                                backgroundGradientTo: Colors.card,
+                                decimalPlaces: 0,
+                                color: () => Colors.accent,
+                                labelColor: () => Colors.muted,
+                                propsForDots: {
+                                    r: '4',
+                                    strokeWidth: '2',
+                                    stroke: Colors.accent,
+                                },
+                            }}
+                            bezier
+                            style={styles.chart}
+                        />
+                        <View style={styles.chartMetaRow}>
+                            <Text style={styles.chartMetaText}>Humidity history</Text>
+                            <Text style={styles.chartMetaText}>
+                                {refreshing ? 'Refreshing...' : 'Live from ESP32'}
                             </Text>
                         </View>
                     </CardBody>
@@ -370,12 +407,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: Spacing.md,
     },
-    chartText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: Colors.text,
+    chart: {
+        marginLeft: -8,
+        borderRadius: BorderRadius.lg,
     },
-    chartSubText: {
+    chartMetaRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: Spacing.sm,
+    },
+    chartMetaText: {
         fontSize: 12,
         color: Colors.muted,
     },
