@@ -54,6 +54,7 @@ export const MonitorScreen: React.FC = () => {
         loading,
         refreshing,
         error,
+        tempHistory,
         humidityHistory,
         refreshData,
     } = useAppContext();
@@ -79,6 +80,11 @@ export const MonitorScreen: React.FC = () => {
     const humidityChartData = {
         labels: humidityHistory.map((_, index) => `${index + 1}`),
         datasets: [
+            {
+                data: tempHistory.length > 0 ? tempHistory : [temp],
+                color: () => '#f59e0b',
+                strokeWidth: 3,
+            },
             {
                 data: humidityHistory.length > 0 ? humidityHistory : [humidity],
                 color: () => Colors.accent,
@@ -177,7 +183,7 @@ export const MonitorScreen: React.FC = () => {
                             data={humidityChartData}
                             width={Dimensions.get('window').width - 64}
                             height={220}
-                            yAxisSuffix="%"
+                            yAxisSuffix=""
                             fromZero
                             withDots
                             withInnerLines={false}
@@ -187,19 +193,26 @@ export const MonitorScreen: React.FC = () => {
                                 backgroundGradientFrom: Colors.card,
                                 backgroundGradientTo: Colors.card,
                                 decimalPlaces: 0,
-                                color: () => Colors.accent,
+                                color: (opacity = 1) => `rgba(245, 158, 11, ${opacity})`,
                                 labelColor: () => Colors.muted,
                                 propsForDots: {
                                     r: '4',
                                     strokeWidth: '2',
-                                    stroke: Colors.accent,
+                                    stroke: '#f59e0b',
                                 },
                             }}
                             bezier
                             style={styles.chart}
                         />
                         <View style={styles.chartMetaRow}>
-                            <Text style={styles.chartMetaText}>Humidity history</Text>
+                            <View style={styles.legendItem}>
+                                <View style={[styles.legendDot, { backgroundColor: '#f59e0b' }]} />
+                                <Text style={styles.chartMetaText}>Temperature</Text>
+                            </View>
+                            <View style={styles.legendItem}>
+                                <View style={[styles.legendDot, { backgroundColor: Colors.accent }]} />
+                                <Text style={styles.chartMetaText}>Humidity</Text>
+                            </View>
                             <Text style={styles.chartMetaText}>
                                 {refreshing ? 'Refreshing...' : 'Live from ESP32'}
                             </Text>
@@ -413,8 +426,21 @@ const styles = StyleSheet.create({
     },
     chartMetaRow: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
+        alignItems: 'center',
         marginTop: Spacing.sm,
+        gap: Spacing.sm,
+    },
+    legendItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    legendDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
     },
     chartMetaText: {
         fontSize: 12,

@@ -36,6 +36,7 @@ interface AppContextType {
     refreshing: boolean;
     error: string | null;
     lastUpdateTime: number;
+    tempHistory: number[];
     humidityHistory: number[];
     refreshData: () => Promise<void>;
 }
@@ -58,6 +59,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdateTime, setLastUpdateTime] = useState(0);
+    const [tempHistory, setTempHistory] = useState<number[]>([11.5, 11.5, 11.5, 11.5, 11.5]);
     const [humidityHistory, setHumidityHistory] = useState<number[]>([88, 88, 88, 88, 88]);
 
     const refreshData = async (options?: { silent?: boolean }) => {
@@ -81,6 +83,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             if (data.doorOpen !== undefined) setDoorOpen(data.doorOpen);
             if (data.gridOn !== undefined) setGridOn(data.gridOn);
             if (data.vegetables !== undefined) setSelectedCrops(data.vegetables);
+            if (data.temperature !== undefined) {
+                setTempHistory(current => pushHistory(current, data.temperature as number));
+            }
             if (data.humidity !== undefined) {
                 setHumidityHistory(current => pushHistory(current, data.humidity as number));
             }
@@ -139,6 +144,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 refreshing,
                 error,
                 lastUpdateTime,
+                tempHistory,
                 humidityHistory,
                 refreshData,
             }}
