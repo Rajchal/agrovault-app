@@ -4,8 +4,6 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    Picker,
-    Slider,
 } from 'react-native';
 import { Colors, Spacing, BorderRadius } from '@styles/theme';
 
@@ -44,15 +42,22 @@ export const ModeSelect: React.FC<ModeSelectProps> = ({
 }) => {
     return (
         <View style={styles.selectContainer}>
-            <Picker
-                selectedValue={value}
-                onValueChange={onChange}
-                style={styles.picker}
-            >
-                {options.map(opt => (
-                    <Picker.Item key={opt.value} label={opt.label} value={opt.value} />
-                ))}
-            </Picker>
+            {options.map(opt => {
+                const selected = opt.value === value;
+
+                return (
+                    <TouchableOpacity
+                        key={opt.value}
+                        style={[styles.modeButton, selected && styles.modeButtonActive]}
+                        onPress={() => onChange(opt.value)}
+                        activeOpacity={0.9}
+                    >
+                        <Text style={[styles.modeText, selected && styles.modeTextActive]}>
+                            {opt.label}
+                        </Text>
+                    </TouchableOpacity>
+                );
+            })}
         </View>
     );
 };
@@ -74,18 +79,29 @@ export const SliderField: React.FC<SliderFieldProps> = ({
     max,
     step,
 }) => {
+    const decrease = () => onChange(Number((Math.max(min, value - step)).toFixed(1)));
+    const increase = () => onChange(Number((Math.min(max, value + step)).toFixed(1)));
+
     return (
         <ControlField label={label} value={value.toFixed(1)}>
-            <Slider
-                style={styles.slider}
-                minimumValue={min}
-                maximumValue={max}
-                step={step}
-                value={value}
-                onValueChange={onChange}
-                minimumTrackTintColor={Colors.accent}
-                maximumTrackTintColor={Colors.border}
-            />
+            <View style={styles.sliderRow}>
+                <TouchableOpacity style={styles.sliderButton} onPress={decrease}>
+                    <Text style={styles.sliderButtonText}>−</Text>
+                </TouchableOpacity>
+                <View style={styles.sliderTrack}>
+                    <View
+                        style={[
+                            styles.sliderFill,
+                            {
+                                width: `${((value - min) / (max - min)) * 100}%`,
+                            },
+                        ]}
+                    />
+                </View>
+                <TouchableOpacity style={styles.sliderButton} onPress={increase}>
+                    <Text style={styles.sliderButtonText}>+</Text>
+                </TouchableOpacity>
+            </View>
         </ControlField>
     );
 };
@@ -150,14 +166,62 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     selectContainer: {
-        borderRadius: BorderRadius.lg,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: Spacing.sm,
+    },
+    modeButton: {
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.md,
+        borderRadius: BorderRadius.full,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        backgroundColor: Colors.card,
+    },
+    modeButtonActive: {
+        borderColor: Colors.accent,
+        backgroundColor: Colors.accentBg,
+    },
+    modeText: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: Colors.text,
+    },
+    modeTextActive: {
+        color: Colors.accent,
+    },
+    sliderRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.sm,
+    },
+    sliderButton: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        backgroundColor: Colors.card,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    sliderButtonText: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: Colors.text,
+        marginTop: -2,
+    },
+    sliderTrack: {
+        flex: 1,
+        height: 10,
+        borderRadius: 999,
+        backgroundColor: Colors.border,
         overflow: 'hidden',
     },
-    picker: {
-        height: 50,
-    },
-    slider: {
-        height: 40,
+    sliderFill: {
+        height: '100%',
+        borderRadius: 999,
+        backgroundColor: Colors.accent,
     },
     toggleContainer: {
         flexDirection: 'row',
