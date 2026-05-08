@@ -18,10 +18,12 @@
     },
     "android": {
       "package": "com.agrovault.mobile",
-      "versionCode": 1,
-      "usesCleartextTraffic": true
+      "versionCode": 1
     },
     "scheme": "agrovault",
+    "plugins": [
+      "./plugins/withCleartextTraffic"
+    ],
     "extra": {
       "eas": {
         "projectId": "648f34ed-91e3-48c6-85e0-4b660e1da0ff"

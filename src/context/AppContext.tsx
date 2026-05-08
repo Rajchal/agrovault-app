@@ -54,7 +54,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             setLoading(true);
             setError(null);
             const data = await fetchSensorDataWithRetry();
-            
+
             if (data.temperature !== undefined) setTemp(data.temperature);
             if (data.humidity !== undefined) setHumidity(data.humidity);
             if (data.battery !== undefined) setBattery(data.battery);
@@ -64,7 +64,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             if (data.doorOpen !== undefined) setDoorOpen(data.doorOpen);
             if (data.gridOn !== undefined) setGridOn(data.gridOn);
             if (data.vegetables !== undefined) setSelectedCrops(data.vegetables);
-            
+
             setLastUpdateTime(Date.now());
         } catch (err) {
             const errorMsg = err instanceof Error ? err.message : 'Failed to fetch sensor data';
